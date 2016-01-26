@@ -12,4 +12,3 @@
 1. Sound program (Pd?)
 2. Graphics manager (voor de achtegrond)
 3. Communicatie tussen tablet en computer (COM, liever geen LAN)
-4. 
