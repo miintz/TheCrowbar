@@ -14,7 +14,7 @@ namespace Assets.Resources.Scripts
             Static,
             Random
         }
-        public ColorTypes ColorType;        
+        public static ColorTypes ColorType;        
         public static int StaticColor;
 
         //bottle options
@@ -27,7 +27,7 @@ namespace Assets.Resources.Scripts
             Tallboy,
             Random            
         }
-        public BottleTypes BottleType;
+        public static BottleTypes BottleType;   
 
         public static int GetRandomColor()
         { 

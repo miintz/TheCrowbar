@@ -2,43 +2,42 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
+//using System.IO.Ports;
 
 namespace Assets.Resources.Scripts
 {
     public static class CommunicationState
     {
-
         private static List<Exception> Errors;
-        private static SerialPort Port;
-
+        //private static SerialPort Port;
+        
         //deze draait aan beide kanten, en communiceert door COM.
         public static void StartNewCommunicationState(string Com = "COM1")
-        {
-            Port = new SerialPort(Com);
+        {                       
+        //    Port = new SerialPort(Com);
 
-            try
-            {
-                Port.Open();
-            }
-            catch (Exception E)
-            {
-                LogError(E);
-            }
+            //try
+            //{
+            //    Port.Open();
+            //}
+            //catch (Exception E)
+            //{
+            //    LogError(E);
+            //}
 
         }
 
-        private void ListenToTablet()
+        private static void ListenToTablet()
         {
             //dit word mss een beetje lastig met EOLs 
         }
 
-        public void ToComputer() //moet een com selectie inbouwen, als dat uberhaupt kan 
+        public static void ToComputer() //moet een com selectie inbouwen, als dat uberhaupt kan 
         {
             //send (tablet kant)
         }
 
-        public void FromTablet()
+        public static void FromTablet()
         {
             //lees de state uit (computer kant)
         }
@@ -48,7 +47,7 @@ namespace Assets.Resources.Scripts
             Errors.Add(E);
         }
 
-        public void DumpLogErrors()
+        public static void DumpLogErrors()
         {
             foreach (Exception e in Errors)
             {
