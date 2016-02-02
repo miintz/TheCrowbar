@@ -29,7 +29,7 @@ public class WriteOnManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Answers = new Dictionary<int, List<string>>();
-
+        
         List<string> lines = new List<string>();
         lines.AddRange(QuestionsForOne.Split(DelimiterCharacter));
 
@@ -44,29 +44,33 @@ public class WriteOnManager : MonoBehaviour {
         lines.AddRange(TheCrowText.Split(DelimiterCharacter));
 
         Answers.Add(2, lines);
-
-        setAnswers();
-        QuestionIndex++;
-        CrowIndex++;
+        
+        setAnswers();        
 	}
 
     void setAnswers(bool crowOnly = false)
     {
         if (!crowOnly)
-        {
+        {            
             List<string> firstlines = new List<string>();
             Answers.TryGetValue(0, out firstlines);
             QuestionOne.text = firstlines[QuestionIndex];
+            QuestionOne.GetComponent<WriteOn>().Init();
 
             List<string> secondlines = new List<string>();
             Answers.TryGetValue(1, out secondlines);
             QuestionTwo.text = secondlines[QuestionIndex];
+            QuestionTwo.GetComponent<WriteOn>().Init();
+
+            QuestionIndex++;
         }
        
         List<string> crowlines = new List<string>();
         Answers.TryGetValue(2, out crowlines);
         TheCrow.text = crowlines[CrowIndex];
-       
+        TheCrow.GetComponent<WriteOn>().Init();
+
+        CrowIndex++;
     }
 
     void resetTextEntities()

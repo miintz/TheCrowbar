@@ -19,12 +19,17 @@ public class WriteOn : MonoBehaviour
     private bool Delaying = false;
     private bool Delayed = false;
 
-    void Start()
+    private bool ReadyForLaunch = false;
+
+    public void Start()
+    {
+       //niks
+    }
+    public void Init()
     {
         //hide text
         String TargetText = Target.text;
         Target.text = "";
-
         Words = TargetText.Split(' '); //dit mag blijkbaar tegenwoordig
         WordTimer = 0.0f;
 
@@ -35,50 +40,55 @@ public class WriteOn : MonoBehaviour
             Delaying = true;
             Delayed = Delaying;
         }
+
+        ReadyForLaunch = true;
     }
 
     public void Update()
     {
-        WordTimer += Time.deltaTime * 1000;
-
-        //eerst moet de delay voorbij zijn
-        if (Delaying && WordTimer >= Delay)
+        if (ReadyForLaunch)
         {
-            Delaying = false;
-            WordTimer = 0.0f;
-        }
+            WordTimer += Time.deltaTime * 1000;
 
-        if (WordTimer >= WriteOnRate && CurrentIndex < Words.Length && !Delaying)
-        {
-            Target.text = "";
-            for (int i = 0; i < CurrentIndex + 1; i++)
+            //eerst moet de delay voorbij zijn
+            if (Delaying && WordTimer >= Delay)
             {
-                if (i != 0)
-                    Target.text += " " + Words[i];
-                else
-                    Target.text += Words[i];
+                Delaying = false;
+                WordTimer = 0.0f;
             }
 
-            CurrentIndex++;
-            WordTimer = 0.0f;
-        }
-
-        if (Interactable)
-        {
-            int fingerCount = 0;
-            foreach (Touch touch in Input.touches)
+            if (WordTimer >= WriteOnRate && CurrentIndex < Words.Length && !Delaying)
             {
-                if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled)
-                    fingerCount++;
+                Target.text = "";
+                for (int i = 0; i < CurrentIndex + 1; i++)
+                {
+                    if (i != 0)
+                        Target.text += " " + Words[i];
+                    else
+                        Target.text += Words[i];
+                }
+
+                CurrentIndex++;
+                WordTimer = 0.0f;
             }
 
-            if(NoTouch && Input.GetMouseButtonDown(0))
+            if (Interactable)
             {
-                Interact();
-            }
-            else if (fingerCount > 0)
-            {
-                Interact();    
+                int fingerCount = 0;
+                foreach (Touch touch in Input.touches)
+                {
+                    if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled)
+                        fingerCount++;
+                }
+
+                if (NoTouch && Input.GetMouseButtonDown(0))
+                {
+                    Interact();
+                }
+                else if (fingerCount > 0)
+                {
+                    Interact();
+                }
             }
         }
     }
