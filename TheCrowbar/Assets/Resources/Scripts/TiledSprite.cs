@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-using UnityEngine;
-using System.Collections;
-
 // @NOTE the attached sprite's position should be "Top Right" or the children will not align properly
 // Strech out the image as you need in the sprite render, the following script will auto-correct it when rendered in the game
 [RequireComponent(typeof(SpriteRenderer))]
@@ -17,10 +14,15 @@ public class TiledSprite : MonoBehaviour
 
     SpriteRenderer sprite;
 
-    void Awake()
+    void Awake() //dit tiled
+    {
+        TileSpriteRenderer();        
+    }
+
+    void TileSpriteRenderer(bool def = true)
     {
         sprite = GetComponent<SpriteRenderer>();
-        
+
         if (!SpritePivotAlignment.GetSpriteAlignment(gameObject).Equals(SpriteAlignment.TopRight))
         {
             Debug.LogError("You forgot change the sprite pivot to Top Right.");
@@ -63,6 +65,23 @@ public class TiledSprite : MonoBehaviour
 
         Destroy(childPrefab);
         sprite.enabled = false; // Disable this SpriteRenderer and let the prefab children render themselves
+
+    }
+
+    void Update()
+    { }
+
+    private SpriteRenderer Next;
+    public Texture2D NextTexture;
+
+    public void FadeToNext()
+    {
+        Next = new UnityEngine.SpriteRenderer();
+        Rect r = new Rect(0, 0, NextTexture.width, NextTexture.height);
+        
+        Next.sprite = Sprite.Create(NextTexture, r, new Vector2(1.0f,0.0f));
+
+        
 
     }
 }
