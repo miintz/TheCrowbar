@@ -6,14 +6,10 @@ using System.Collections.Generic;
 
 public class WriteOnManager : MonoBehaviour {
 
-    private Dictionary<int, List<string>> Answers;
-
+    
     public Text TheCrow;
     public Text QuestionOne;
     public Text QuestionTwo;
-
-    private int CrowIndex;
-    private int QuestionIndex;
 
     [TextArea(3, 10)]
     public string TheCrowText;
@@ -26,39 +22,46 @@ public class WriteOnManager : MonoBehaviour {
 
     public char DelimiterCharacter;
 
+    private Dictionary<int, List<string>> Input;
+    private int CrowIndex;
+    private int QuestionIndex;
+
+    private List<int> Answers;
+
 	// Use this for initialization
 	void Start () {
-        Answers = new Dictionary<int, List<string>>();
+        Answers = new List<int>();
+        Input = new Dictionary<int, List<string>>();
         
         List<string> lines = new List<string>();
         lines.AddRange(QuestionsForOne.Split(DelimiterCharacter));
 
-        Answers.Add(0, lines);
+        Input.Add(0, lines);
 
         lines = new List<string>();
         lines.AddRange(QuestionsForTwo.Split(DelimiterCharacter));
 
-        Answers.Add(1, lines);
+        Input.Add(1, lines);
 
         lines = new List<string>();
         lines.AddRange(TheCrowText.Split(DelimiterCharacter));
 
-        Answers.Add(2, lines);
+        Input.Add(2, lines);
         
         setAnswers();        
 	}
 
     void setAnswers(bool crowOnly = false)
-    {
+    {        
         if (!crowOnly)
         {            
             List<string> firstlines = new List<string>();
-            Answers.TryGetValue(0, out firstlines);
+            Input.TryGetValue(0, out firstlines);
             QuestionOne.text = firstlines[QuestionIndex];
             QuestionOne.GetComponent<WriteOn>().Init();
 
             List<string> secondlines = new List<string>();
-            Answers.TryGetValue(1, out secondlines);
+            Input.TryGetValue(1, out secondlines);
             QuestionTwo.text = secondlines[QuestionIndex];
             QuestionTwo.GetComponent<WriteOn>().Init();
 
@@ -66,11 +69,11 @@ public class WriteOnManager : MonoBehaviour {
         }
        
         List<string> crowlines = new List<string>();
-        Answers.TryGetValue(2, out crowlines);
+        Input.TryGetValue(2, out crowlines);
         TheCrow.text = crowlines[CrowIndex];
         TheCrow.GetComponent<WriteOn>().Init();
 
-        CrowIndex++;
+        CrowIndex++;        
     }
 
     void resetTextEntities()
@@ -94,9 +97,11 @@ public class WriteOnManager : MonoBehaviour {
         //}
 	}
 
-    public void NextAnswer()
+    public void NextAnswer(int index)
     {
         setAnswers();
-        resetTextEntities();
+        //resetTextEntities(); dit werkt niet
+
+        Answers.Add(index);
     }
 }

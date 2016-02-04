@@ -94,7 +94,7 @@ public class WriteOn : MonoBehaviour
     }
 
     public void Reset()
-    {
+    {        
         if (Delayed)
             Delaying = Delayed;
 
