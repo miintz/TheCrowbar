@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEditor;
 using System.Collections.Generic;
+using Assets.Resources.Scripts;
 
 public class WriteOnManager : MonoBehaviour {
 
@@ -50,6 +51,8 @@ public class WriteOnManager : MonoBehaviour {
         
         setAnswers();        
 	}
+
+  
 
     void setAnswers(bool crowOnly = false)
     {        
@@ -99,9 +102,7 @@ public class WriteOnManager : MonoBehaviour {
 
     public void NextAnswer(int index)
     {
-        setAnswers();
-        //resetTextEntities(); dit werkt niet
-
+        setAnswers();        
         Answers.Add(index);
     }
 }

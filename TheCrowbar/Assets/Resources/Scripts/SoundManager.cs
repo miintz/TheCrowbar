@@ -39,7 +39,6 @@ namespace Assets.Resources.Scripts
             //check if the file is valid and load it
             foreach (FileInfo f in files)
             {
-
                 if (validFileType(f.FullName))
                 {
                     StartCoroutine(loadFile(f.FullName, true));
@@ -87,9 +86,11 @@ namespace Assets.Resources.Scripts
             clip.name = parts[parts.Length - 1];
 
             if (!crowd)
-                singles.Add(clip);
-            else
+            {                
                 crowds.Add(clip);
+            }
+            else
+                singles.Add(clip);
         }
 
         public void PlaySingleRandom()

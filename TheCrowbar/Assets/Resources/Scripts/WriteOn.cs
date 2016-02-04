@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
+using Assets.Resources.Scripts;
 
 public class WriteOn : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class WriteOn : MonoBehaviour
     public String PauseChar;
     public bool Interactable;
     public bool NoTouch = true;
+    public bool Speaker = false;
+    public int SkipWord = 2;
+    public bool Single = false;
     public int Delay;
 
     private String[] Words;
@@ -42,6 +46,12 @@ public class WriteOn : MonoBehaviour
         }
 
         ReadyForLaunch = true;
+    }  
+    
+    void startSpeaking()
+    {
+        if (Speaker && Single)
+            GameObject.Find("CrowSound").GetComponent<SoundManager>().PlaySingleRandom();
     }
 
     public void Update()
@@ -59,6 +69,12 @@ public class WriteOn : MonoBehaviour
 
             if (WordTimer >= WriteOnRate && CurrentIndex < Words.Length && !Delaying)
             {
+                //play sound with each word
+                if (CurrentIndex < Words.Length - 1 && CurrentIndex % SkipWord == 0)
+                {
+                    startSpeaking();
+                }
+
                 Target.text = "";
                 for (int i = 0; i < CurrentIndex + 1; i++)
                 {
