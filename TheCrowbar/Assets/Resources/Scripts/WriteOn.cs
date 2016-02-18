@@ -12,6 +12,7 @@ public class WriteOn : MonoBehaviour
     public String PauseChar;
     public bool Interactable;
     public bool NoTouch = true;
+    public bool NoClick = true;
     public bool Speaker = false;
     public int SkipWord = 2;
     public bool Single = false;
@@ -97,13 +98,15 @@ public class WriteOn : MonoBehaviour
                         fingerCount++;
                 }
 
-                if (NoTouch && Input.GetMouseButtonDown(0))
+                if (NoTouch && !NoClick && Input.GetMouseButtonDown(0))
                 {
                     Interact();
+                    Debug.Log("no click int");
                 }
                 else if (fingerCount > 0)
                 {
                     Interact();
+                    Debug.Log("click int");
                 }
             }
         }
