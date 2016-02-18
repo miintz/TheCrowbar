@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using System.Collections.Generic;
 using Assets.Resources.Scripts;
+using System.IO;
 
 public class WriteOnManager : MonoBehaviour {
 
@@ -11,6 +12,8 @@ public class WriteOnManager : MonoBehaviour {
     public Text TheCrow;
     public Text QuestionOne;
     public Text QuestionTwo;
+
+    public bool QuestionsFirst = false; //eerst vragen of eerst het gedicht?
 
     [TextArea(3, 10)]
     public string TheCrowText;
@@ -20,6 +23,9 @@ public class WriteOnManager : MonoBehaviour {
 
     [TextArea(3, 10)]
     public string QuestionsForTwo;
+    
+    public string DisableClickEventsAt;
+    public string DisableSwipeAt;
 
     public char DelimiterCharacter;
 
@@ -28,6 +34,7 @@ public class WriteOnManager : MonoBehaviour {
     private int QuestionIndex;
 
     private List<int> Answers;
+    private Dictionary<int, string> PoemsList;    
 
 	// Use this for initialization
 	void Start () {
@@ -48,13 +55,45 @@ public class WriteOnManager : MonoBehaviour {
         lines.AddRange(TheCrowText.Split(DelimiterCharacter));
 
         Input.Add(2, lines);
-        
-        setAnswers();        
+
+        /*
+        PoemsList.AddRange(Poems.Split(DelimiterCharacter));
+       
+        string[] nu = SwapWords.Split(DelimiterCharacter);
+        for (int i = 0; i < nu.Length; i++)
+        {
+            List<string> l = new List<string>();
+            l.AddRange(nu[i].Split(','));
+            SwapWordsList.Add(i, l);
+        }       
+        */
+
+        populatePoems();
+
+        if (QuestionsFirst)
+            setAnswersToGameObjects();
+        else
+            setPoemToGameObjects();
 	}
 
-  
+    private void setPoemToGameObjects()
+    {
+        TheCrow.text = PoemsList[1];
+    }
 
-    void setAnswers(bool crowOnly = false)
+    private void populatePoems()
+    {
+        string[] poemfiles = Directory.GetFiles("Assets/Resources/Poems", "*.txt");
+        int i = 0;
+        foreach (string path in poemfiles)
+        {           
+            string text = File.ReadAllText(path);
+            PoemsList.Add(i, text);
+            i++;
+        }
+    }
+
+    void setAnswersToGameObjects(bool crowOnly = false)
     {        
         if (!crowOnly)
         {            
@@ -88,7 +127,7 @@ public class WriteOnManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        //for (int i = 0; i < Answers.Count; i++)
+        //for (int i = 0; i < Answers.Count; i+)+   
         //{
         //    List<string> list = new List<string>();
         //    Answers.TryGetValue(i, out list);
@@ -102,7 +141,7 @@ public class WriteOnManager : MonoBehaviour {
 
     public void NextAnswer(int index)
     {
-        setAnswers();        
+        setAnswersToGameObjects();        
         Answers.Add(index);
     }
 }
