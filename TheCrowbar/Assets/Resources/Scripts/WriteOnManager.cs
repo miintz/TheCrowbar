@@ -54,7 +54,7 @@ public class WriteOnManager : MonoBehaviour {
         lines = new List<string>();
         lines.AddRange(TheCrowText.Split(DelimiterCharacter));
 
-        Input.Add(2, lines);
+        Input.Add(2, lines);        
 
         /*
         PoemsList.AddRange(Poems.Split(DelimiterCharacter));
@@ -83,6 +83,8 @@ public class WriteOnManager : MonoBehaviour {
 
     private void populatePoems()
     {
+        PoemsList = new Dictionary<int, string>();
+
         string[] poemfiles = Directory.GetFiles("Assets/Resources/Poems", "*.txt");
         int i = 0;
         foreach (string path in poemfiles)
