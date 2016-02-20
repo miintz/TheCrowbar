@@ -4,29 +4,98 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+
+
 public class SpriteRandomizer : MonoBehaviour {
 
     public bool ShufflePositionOnStart = true;
 
     private Dictionary<string, List<GameObject>> Sprites;
+    private Dictionary<string, List<string>> SpritesVarietyOriginal;
+    private Dictionary<string, Dictionary<string, Transform>> SpritesVarietyTransforms;
+
+    private int CurrentVarietyStepper = 0;
+
+    private Sprite[] BeerSprites;
+    private Sprite[] WineSprites;
+    private Sprite[] ChampagneSprites;
 
 	// Use this for initialization
 	void Start () {
+        BeerSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Beer");
+        WineSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Wine");
+        ChampagneSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Champagne");
+        
 	    //we hebben een lijst met objecten...
         PopulateSpriteList();
 
         if (ShufflePositionOnStart)
             ShufflePosition();
+
+        SetVariety(6);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            CurrentVarietyStepper--;
+            SetVariety(CurrentVarietyStepper);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            CurrentVarietyStepper++;
+            SetVariety(CurrentVarietyStepper);
+        }
 	}
 
-    void SetVariety(float percentage)
-    { 
+    void SetVariety(int stepper)
+    {
+        CurrentVarietyStepper = stepper;        
         
+        //op basis van de shelf-by-shelf soorten
+        string[] Keys = new string[Sprites.Count];
+        Sprites.Keys.CopyTo(Keys, 0);
+
+        foreach (string Key in Keys)
+        {
+            string current = null;
+            List<string> Renderers = SpritesVarietyOriginal[Key];
+
+            int Step = 0;
+            for (int i = 0; i < Renderers.Count - 1; i++)
+            {
+                if (current == null)
+                    current = Renderers[i];
+                else
+                {   
+                    Step++;
+
+                    if (Step == stepper)
+                    {
+                        Step = 0;
+                        if(i != Renderers.Count - 1)
+                            current = Renderers[i + 1];
+                    }
+                    else
+                    {
+                        //set sprite, doe dit direct want sprites zijn reference types. geeft gelul enzo
+                        Sprites[Key][i].GetComponent<SpriteRenderer>().sprite = BeerSprites.First(t => t.name == current);
+                        string n = Sprites[Key][i].GetComponent<SpriteRenderer>().sprite.name;
+                        
+                        Transform tr = SpritesVarietyTransforms[Key][n];
+                        
+                        Vector3 localScale = tr.localScale;
+                        Vector3 localPosition = Sprites[Key][i].transform.position;
+                        localPosition.y = tr.position.y;
+
+                        Sprites[Key][i].transform.localScale = localScale;
+                        Sprites[Key][i].transform.position = localPosition;
+                    }
+                }
+            }            
+        }
     }
 
     void ShufflePosition()
@@ -59,7 +128,7 @@ public class SpriteRandomizer : MonoBehaviour {
             }
 
             float difference = Mathf.Abs(leftBound - rightBound);
-            float distance = difference / (SpriteList.Count - 6); //????
+            float distance = difference / (SpriteList.Count - 5); //????
             
             List<float> newPositions = new List<float>();
             //generate positions
@@ -96,8 +165,7 @@ public class SpriteRandomizer : MonoBehaviour {
             }
         }        
     }
-   
-
+    
     void PopulateSpriteList()
     {
         Sprites = new Dictionary<string, List<GameObject>>();
@@ -133,6 +201,39 @@ public class SpriteRandomizer : MonoBehaviour {
         for (int k = 0; k < Keys.Length; k++)
         {         
             Sprites[Keys[k]] = Sprites[Keys[k]].OrderBy(t => t.transform.name).ToList(); //sort by name ASC
+        }
+
+        PopulateSpriteVarietyList();
+    }
+
+    void PopulateSpriteVarietyList()
+    {        
+        SpritesVarietyOriginal = new Dictionary<string, List<string>>();
+        SpritesVarietyTransforms = new Dictionary<string, Dictionary<string, Transform>>();
+
+        string[] Keys = new string[Sprites.Count];
+        Sprites.Keys.CopyTo(Keys, 0);
+
+        foreach (string Key in Keys)
+        {            
+            SpritesVarietyOriginal.Add(Key, new List<string>());
+            SpritesVarietyTransforms.Add(Key, new Dictionary<string, Transform>());
+        }
+
+        foreach (string Key in Keys)
+        {                        
+            //namen van de textures en de scales.
+            foreach (GameObject obj in Sprites[Key])
+            {
+                string name = obj.GetComponent<SpriteRenderer>().sprite.name;               
+
+                SpritesVarietyOriginal[Key].Add(name);
+
+                if (!SpritesVarietyTransforms[Key].ContainsKey(name))
+                {
+                    SpritesVarietyTransforms[Key].Add(name, obj.transform);
+                }
+            }
         }
     }
 }
