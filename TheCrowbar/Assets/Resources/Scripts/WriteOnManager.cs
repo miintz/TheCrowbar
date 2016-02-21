@@ -104,15 +104,14 @@ public class WriteOnManager : MonoBehaviour
     {
         PoemsList = new SortedList<int, string>(new DuplicateKeyComparer<int>()); //lijst met niet-unique keys
 
-        string[] poemfiles = Directory.GetFiles("Assets/Resources/Poems", "*.txt");
+        TextAsset[] poems = Resources.LoadAll<TextAsset>("Poems");
         int i = 0;
-        foreach (string path in poemfiles)
-        {
-            string[] spl = path.Split('\\');
+        foreach (TextAsset path in poems)
+        {            
             //pak eerste stukje van de .txt naam, dat is de key
-            int n = Int32.Parse(spl[spl.Length - 1].Split('.')[0].ToCharArray()[0].ToString());
+            int n = Int32.Parse(path.name.ToCharArray()[0].ToString());
 
-            string text = File.ReadAllText(path);
+            string text = path.text;
 
             PoemsList.Add(n, text);
             i++;
