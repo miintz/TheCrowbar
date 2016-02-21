@@ -43,7 +43,32 @@ public class SpriteController : MonoBehaviour {
         {
             SetVariety(1);
         }
+        
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SetOversee(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            SetOversee(true);
+        }
 	}
+
+    void SetOversee(bool active = false)
+    { 
+        //hide een aantal flessen?
+        string[] Keys = new string[Sprites.Count];
+        Sprites.Keys.CopyTo(Keys, 0);
+
+        foreach (string Key in Keys)
+        {
+            for (int i = 0; i < Sprites[Key].Count; i++)
+            {
+                Sprites[Key][i].SetActive(active);
+            }
+        }
+    }
 
     void SetVariety(int stepper)
     {
