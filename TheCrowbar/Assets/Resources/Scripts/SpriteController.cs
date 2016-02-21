@@ -75,8 +75,7 @@ public class SpriteController : MonoBehaviour {
     void SetInflammable(bool IN_FLAMES = false)
     {        
         for (int i = 0; i < Fires.Length - 1; i++)
-        {
-            Debug.Log("changing: " + Fires[i].name);
+        {           
             Fires[i].SetActive(IN_FLAMES);
         }
     }

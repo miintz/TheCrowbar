@@ -45,6 +45,9 @@ public class WriteOnManager : MonoBehaviour
 
     public bool PoemMode;
 
+    public GameObject SwipeGUILeft;
+    public GameObject SwipeGUIRight;
+
     // Use this for initialization
     void Start()
     {
@@ -73,6 +76,11 @@ public class WriteOnManager : MonoBehaviour
             switchToQuestionMode();
         else
             switchToPoemMode();
+
+        SwipeGUILeft = GameObject.FindGameObjectWithTag("GUIleft");
+        SwipeGUIRight = GameObject.FindGameObjectWithTag("GUIright");
+
+        SwipeGUIRight.SetActive(false);
     }
 
     private void setPoemToGameObjects()
@@ -221,10 +229,13 @@ public class WriteOnManager : MonoBehaviour
             //swipe left
             if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                Debug.Log("left swipe");
+                Debug.Log("left swipe " + CurrentPoem);
                 //laad vorige 
                 if (CurrentPoem < CurrentPoems.Count - 1)
+                {
                     CurrentPoem++;
+                    SwipeGUIRight.SetActive(true);
+                }
                 else
                 {
                     Debug.Log("final swipe! switching to question mode");
@@ -237,10 +248,14 @@ public class WriteOnManager : MonoBehaviour
             //swipe right
             if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                Debug.Log("right swipe");
+                Debug.Log("right swipe " + CurrentPoem);
                 //laad volgende gedicht
                 if (CurrentPoem > 0)
+                {
                     CurrentPoem--;
+                    if(CurrentPoem == 0)
+                        SwipeGUIRight.SetActive(false);
+                }
 
                 TheCrow.text = CurrentPoems[CurrentPoem];
             }
@@ -255,6 +270,9 @@ public class WriteOnManager : MonoBehaviour
         TheCrow.GetComponent<WriteOn>().NoClick = false;
         QuestionOne.GetComponent<WriteOn>().NoClick = false;
         QuestionTwo.GetComponent<WriteOn>().NoClick = false;
+
+        SwipeGUIRight.SetActive(false);
+        SwipeGUILeft.SetActive(false);
 
         this.NoClick = false;
 
