@@ -7,6 +7,7 @@ using System;
 public class SpriteController : MonoBehaviour {
 
     public bool ShufflePositionOnStart = true;
+    public bool HideFlamesOnStart = true;
 
     private Dictionary<string, List<GameObject>> Sprites;
     private Dictionary<string, List<string>> SpritesVarietyOriginal;
@@ -17,18 +18,24 @@ public class SpriteController : MonoBehaviour {
     private Sprite[] BeerSprites;
     private Sprite[] WineSprites;
     private Sprite[] ChampagneSprites;
+    private GameObject[] Fires;
 
 	// Use this for initialization
 	void Start () {
         BeerSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Beer");
         WineSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Wine");
         ChampagneSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Champagne");
+        Fires = GameObject.FindGameObjectsWithTag("flames"); //1tje gaat niet?
+        
         
 	    //we hebben een lijst met objecten...
         PopulateSpriteList();
 
         if (ShufflePositionOnStart)
             ShufflePosition();
+
+        if (HideFlamesOnStart)
+            SetInflammable(false);
 	}
 	
 	// Update is called once per frame
@@ -36,7 +43,7 @@ public class SpriteController : MonoBehaviour {
       
         if (Input.GetKeyDown(KeyCode.D))
         {
-            SetVariety(10);
+            SetVariety(12); //blijft altijd 1 unique fles
         }
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -53,9 +60,28 @@ public class SpriteController : MonoBehaviour {
         {
             SetOversee(true);
         }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {           
+            SetInflammable(true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {          
+            SetInflammable(false);
+        }
 	}
 
-    void SetOversee(bool active = false)
+    void SetInflammable(bool IN_FLAMES = false)
+    {        
+        for (int i = 0; i < Fires.Length - 1; i++)
+        {
+            Debug.Log("changing: " + Fires[i].name);
+            Fires[i].SetActive(IN_FLAMES);
+        }
+    }
+
+    void SetOversee(bool visible = false)
     { 
         //hide een aantal flessen?
         string[] Keys = new string[Sprites.Count];
@@ -65,7 +91,7 @@ public class SpriteController : MonoBehaviour {
         {
             for (int i = 0; i < Sprites[Key].Count; i++)
             {
-                Sprites[Key][i].SetActive(active);
+                Sprites[Key][i].SetActive(visible);
             }
         }
     }
