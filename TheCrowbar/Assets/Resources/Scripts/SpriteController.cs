@@ -33,16 +33,15 @@ public class SpriteController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.A))
-        {            
-            //CurrentVarietyStepper--;
-            //Debug.Log(CurrentVarietyStepper);
-            //SetVariety(CurrentVarietyStepper);
-        }
-
+      
         if (Input.GetKeyDown(KeyCode.D))
         {
             SetVariety(10);
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SetVariety(1);
         }
 	}
 
@@ -74,21 +73,20 @@ public class SpriteController : MonoBehaviour {
                         if(i != Renderers.Count - 1)
                             current = Renderers[i + 1];
                     }
-                    else
-                    {
-                        //set sprite, doe dit direct want sprites zijn reference types. geeft gelul enzo
-                        Sprites[Key][i].GetComponent<SpriteRenderer>().sprite = BeerSprites.First(t => t.name == current);
-                        string n = Sprites[Key][i].GetComponent<SpriteRenderer>().sprite.name;
-                        
-                        Transform tr = SpritesVarietyTransforms[Key][n];
-                        
-                        Vector3 localScale = tr.localScale;
-                        Vector3 localPosition = Sprites[Key][i].transform.position;
-                        localPosition.y = tr.position.y;
 
-                        Sprites[Key][i].transform.localScale = localScale;
-                        Sprites[Key][i].transform.position = localPosition;
-                    }
+                    //set sprite, doe dit direct want sprites zijn reference types. geeft gelul enzo
+                    Sprites[Key][i].GetComponent<SpriteRenderer>().sprite = BeerSprites.First(t => t.name == current);
+                    string n = Sprites[Key][i].GetComponent<SpriteRenderer>().sprite.name;
+                    
+                    //Transform tr = SpritesVarietyTransforms[Key][current];
+                        
+                    //Vector3 localScale = tr.localScale;
+                    //Vector3 localPosition = Sprites[Key][i].transform.position;
+                    //localPosition.y = tr.position.y;
+
+                    //Sprites[Key][i].transform.localScale = localScale;
+                    //Sprites[Key][i].transform.position = localPosition;
+
                 }
             }            
         }
@@ -221,8 +219,8 @@ public class SpriteController : MonoBehaviour {
             //namen van de textures en de scales.
             foreach (GameObject obj in Sprites[Key])
             {
-                string name = obj.GetComponent<SpriteRenderer>().sprite.name;               
-
+                string name = obj.GetComponent<SpriteRenderer>().sprite.name;
+                
                 SpritesVarietyOriginal[Key].Add(name);
 
                 if (!SpritesVarietyTransforms[Key].ContainsKey(name))
