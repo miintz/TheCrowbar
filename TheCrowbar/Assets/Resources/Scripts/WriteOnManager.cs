@@ -7,6 +7,9 @@ using Assets.Resources.Scripts;
 using System.IO;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Text;
+using UnityEngine.Assertions;
 
 public class WriteOnManager : MonoBehaviour
 {
@@ -226,10 +229,11 @@ public class WriteOnManager : MonoBehaviour
             //{
             //    Debug.Log("down swipe");
             //}
+
             //swipe left
             if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                Debug.Log("left swipe " + CurrentPoem);
+                //Debug.Log("left swipe " + CurrentPoem);
                 //laad vorige 
                 if (CurrentPoem < CurrentPoems.Count - 1)
                 {
@@ -238,22 +242,44 @@ public class WriteOnManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("final swipe! switching to question mode");
+                    //Debug.Log("final swipe! switching to question mode");
                     switchToQuestionMode();
                 }
 
+                string naow = TheCrow.text;
+                string yest = CurrentPoems[CurrentPoem];
+
+                naow = Regex.Replace(naow, @"[\s+]", "");
+                yest = Regex.Replace(yest, @"[\s+]", "");
+                
+                char[] na = naow.ToCharArray();
+                char[] ye = yest.ToCharArray();
+
+                List<char> diffe = new List<char>();
+
+                int i =0;
+                foreach (char item in na)
+                {
+                    if (item != ye[i])
+                        diffe.Add(ye[i]);
+
+                    i++;
+                }
+
+                string different = new string(diffe.Distinct().ToArray());
+                Debug.Log(different);
 
                 TheCrow.text = CurrentPoems[CurrentPoem];
             }
             //swipe right
             if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                Debug.Log("right swipe " + CurrentPoem);
+                //Debug.Log("right swipe " + CurrentPoem);
                 //laad volgende gedicht
                 if (CurrentPoem > 0)
                 {
                     CurrentPoem--;
-                    if(CurrentPoem == 0)
+                    if (CurrentPoem == 0)
                         SwipeGUIRight.SetActive(false);
                 }
 
@@ -261,7 +287,7 @@ public class WriteOnManager : MonoBehaviour
             }
         }
     }
-
+    
     private void switchToQuestionMode()
     {
         PoemMode = false;
