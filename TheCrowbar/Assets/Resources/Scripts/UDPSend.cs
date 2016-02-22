@@ -89,7 +89,7 @@ public class UDPSend : MonoBehaviour
         //print("UDPSend.init()");
 
         // define
-        IP = "127.0.0.1";
+       // IP = "127.0.0.1";
         port = 8051;
 
         // ----------------------------
