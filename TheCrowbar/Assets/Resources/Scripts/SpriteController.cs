@@ -15,18 +15,27 @@ public class SpriteController : MonoBehaviour {
 
     private int CurrentVarietyStepper = 0;
 
+    private bool KeyMode = false;
+
     private Sprite[] BeerSprites;
     private Sprite[] WineSprites;
     private Sprite[] ChampagneSprites;
     private GameObject[] Fires;
+    
+    public string BackgroundOptionsOne;
+    public string BackgroundOptionsTwo;
+
+    private List<string[]> ActiveOptions = new List<string[]>();
+
+    private string ReceivedMessage;
 
 	// Use this for initialization
 	void Start () {
         BeerSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Beer");
         WineSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Wine");
         ChampagneSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Champagne");
-        Fires = GameObject.FindGameObjectsWithTag("flames"); //1tje gaat niet?
         
+        Fires = GameObject.FindGameObjectsWithTag("flames"); //1tje gaat niet?
         
 	    //we hebben een lijst met objecten...
         PopulateSpriteList();
@@ -36,44 +45,64 @@ public class SpriteController : MonoBehaviour {
 
         if (HideFlamesOnStart)
             SetInflammable(false);
+
+        string[] optionsone = BackgroundOptionsOne.Split(';');
+        string[] optionstwo = BackgroundOptionsTwo.Split(';');
+
+        ActiveOptions.Add(new string[2] { optionsone[0], optionstwo[0] });
+        ActiveOptions.Add(new string[2] { optionsone[1], optionstwo[1] });
+        ActiveOptions.Add(new string[2] { optionsone[2], optionstwo[2] });
 	}
 	
 	// Update is called once per frame
 	void Update () {
-      
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            SetVariety(12); //blijft altijd 1 unique fles
-        }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (!KeyMode)
         {
-            SetVariety(1);
+            string udpr = this.GetComponent<UDPReceive>().lastReceivedUDPPacket;
+            if (ReceivedMessage != udpr)
+            {
+                ReceivedMessage = udpr;
+                handleMessage();
+            }
         }
-        
-        if (Input.GetKeyDown(KeyCode.L))
+        else
         {
-            SetOversee(false);
-        }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                SetVariety(12); //blijft altijd 1 unique fles
+            }
 
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            SetOversee(true);
-        }
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                SetVariety(1);
+            }
 
-        if (Input.GetKeyDown(KeyCode.H))
-        {           
-            SetInflammable(true);
-        }
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                SetOversee(false);
+            }
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {          
-            SetInflammable(false);
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                SetOversee(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                SetInflammable(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                SetInflammable(false);
+            }
         }
 	}
 
     void SetInflammable(bool IN_FLAMES = false)
-    {        
+    {
+        Debug.Log("setting flames to: " + IN_FLAMES + " " + Fires.Length);
         for (int i = 0; i < Fires.Length - 1; i++)
         {           
             Fires[i].SetActive(IN_FLAMES);
@@ -276,6 +305,48 @@ public class SpriteController : MonoBehaviour {
                 if (!SpritesVarietyTransforms[Key].ContainsKey(name))
                 {
                     SpritesVarietyTransforms[Key].Add(name, obj.transform);
+                }
+            }
+        }
+    }
+
+    internal void handleMessage()
+    {     
+        foreach (string[] items in ActiveOptions)
+        {         
+            foreach (string i in items)
+            {
+                if (ReceivedMessage == i)
+                {
+                    Debug.Log("hebbasases " + i + " " + ReceivedMessage);
+                    if (i.Contains("fl"))
+                        Debug.Log("waarom vuurt dit niet?");
+
+                    if (i.Length != ReceivedMessage.Length)
+                        Debug.Log("huh");
+
+                    if (i.Contains("fl")) //ik heb werkelijk waar geen flets idee waarom de case niet werkt. 
+                    {                  
+                        SetInflammable(true);                            
+                    }   
+
+                    switch (i)
+                    {                        
+                        case "variety":
+                            //SetVariety(1);
+                            SetVariety(13);
+                            break;
+                        case "novariety":
+                            SetVariety(13);
+                            break;
+                        case "oversee":
+                            SetOversee(false);
+                            break;
+                        case "nooversee":
+                            //SetOversee(false);
+                            SetOversee(false);
+                            break;
+                    }
                 }
             }
         }

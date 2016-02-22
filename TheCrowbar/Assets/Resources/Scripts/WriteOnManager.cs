@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
+
 using System.Collections.Generic;
 using Assets.Resources.Scripts;
 using System.IO;
@@ -13,8 +17,6 @@ using UnityEngine.Assertions;
 
 public class WriteOnManager : MonoBehaviour
 {
-
-
     public Text TheCrow;
     public Text QuestionOne;
     public Text QuestionTwo;
@@ -30,6 +32,9 @@ public class WriteOnManager : MonoBehaviour
     [TextArea(3, 10)]
     public string QuestionsForTwo;
 
+    public string BackgroundOptionsOne;
+    public string BackgroundOptionsTwo;
+
     public string DisableClickEventsAt;
     public string DisableSwipeAt;
 
@@ -44,6 +49,7 @@ public class WriteOnManager : MonoBehaviour
     private List<int> Answers;
     private SortedList<int, string> PoemsList;
     private List<string> CurrentPoems;
+    private int CurrentQuestion = 0;
     private int CurrentPoem = 0;
 
     public bool PoemMode;
@@ -51,9 +57,11 @@ public class WriteOnManager : MonoBehaviour
     public GameObject SwipeGUILeft;
     public GameObject SwipeGUIRight;
 
+    private List<string[]> ActiveOptions = new List<string[]>();
+
     // Use this for initialization
     void Start()
-    {
+    {        
         Answers = new List<int>();
         Input = new Dictionary<int, List<string>>();
 
@@ -72,6 +80,16 @@ public class WriteOnManager : MonoBehaviour
 
         Input.Add(2, lines);
 
+        string[] optionsone = BackgroundOptionsOne.Split(DelimiterCharacter);
+        string[] optionstwo = BackgroundOptionsTwo.Split(DelimiterCharacter);
+
+        ActiveOptions.Add(new string[2] { optionsone[0], optionstwo[0] });
+        ActiveOptions.Add(new string[2] { optionsone[1], optionstwo[1] });
+        ActiveOptions.Add(new string[2] { optionsone[2], optionstwo[2] });
+        
+        SwipeGUILeft = GameObject.FindGameObjectWithTag("GUIleft");
+        SwipeGUIRight = GameObject.FindGameObjectWithTag("GUIright");
+ 
         //vul lijst met poems
         populatePoems();
 
@@ -79,10 +97,7 @@ public class WriteOnManager : MonoBehaviour
             switchToQuestionMode();
         else
             switchToPoemMode();
-
-        SwipeGUILeft = GameObject.FindGameObjectWithTag("GUIleft");
-        SwipeGUIRight = GameObject.FindGameObjectWithTag("GUIright");
-
+      
         SwipeGUIRight.SetActive(false);
     }
 
@@ -292,6 +307,10 @@ public class WriteOnManager : MonoBehaviour
     {
         PoemMode = false;
         QuestionIndex = 0;
+        CurrentQuestion = 0;
+
+        Answers = new List<int>();
+
         CrowIndex = 0;
         TheCrow.GetComponent<WriteOn>().NoClick = false;
         QuestionOne.GetComponent<WriteOn>().NoClick = false;
@@ -323,12 +342,20 @@ public class WriteOnManager : MonoBehaviour
     }
 
     public void NextAnswer(int index)
-    {
-     //   Debug.Log("peommode " +  PoemMode);
+    {        
         if (!NoClick && !PoemMode)
         {
+            Debug.Log("sending string: " + ActiveOptions[CurrentQuestion][index]);
+            this.GetComponent<UDPSend>().sendString(ActiveOptions[CurrentQuestion][index]);
+
             setAnswersToGameObjects();
+
+            //setting answer
+            //Debug.Log("setting answer + " + CurrentQuestion + " " + ActiveOptions[CurrentQuestion][index]);
+
+
             Answers.Add(index);
+            CurrentQuestion++;
         }
 
     }

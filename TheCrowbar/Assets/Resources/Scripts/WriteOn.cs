@@ -101,12 +101,12 @@ public class WriteOn : MonoBehaviour
                 if (NoTouch && !NoClick && Input.GetMouseButtonDown(0))
                 {
                     Interact();
-                    Debug.Log("no click int");
+                    //Debug.Log("no click int");
                 }
                 else if (fingerCount > 0)
                 {
                     Interact();
-                    Debug.Log("click int");
+                    //Debug.Log("click int");
                 }
             }
         }
