@@ -372,26 +372,26 @@ public class BottleController : MonoBehaviour {
     }
 
     internal void handleMessage()
-    {     
-        foreach (string[] items in ActiveOptions)
-        {         
-            foreach (string i in items)
-            {
-                if (ReceivedMessage == i)
-                {
-                    //Debug.Log("hebbasases " + i + " " + ReceivedMessage);
+    {
+        //Debug.Log("handling message:L " + ReceivedMessage);
+        //foreach (string[] items in ActiveOptions)
+        //{         
+        //    foreach (string i in items)
+        //    {
+        //        if (ReceivedMessage == i)
+        //        {
+
+                   
+
                     //if (i.Contains("fl"))
-                    //    Debug.Log("waarom vuurt dit niet?");
+                        //Debug.Log("waarom vuurt dit niet?");
 
                     //if (i.Length != ReceivedMessage.Length)
                     //    Debug.Log("huh");
 
-                    //if (i.Contains("fl")) //ik heb werkelijk waar geen flets idee waarom de case niet werkt. 
-                    //{                  
-                    //    SetInflammable(true);                            
-                    //}   
+                   
 
-                    switch (i)
+                    switch (ReceivedMessage)
                     {                     
                         case "flame":
                             if (SingleEffect)
@@ -436,11 +436,14 @@ public class BottleController : MonoBehaviour {
 
                             SetOversee(false);
                             
-                            break;                        
+                            break;             
+                        case "disablefx":
+                            DisableEffects();
+                            break;
                     }
-                }
-            }
-        }
+                //}
+        //    }
+        //}
     }
 
     private void DisableEffects()

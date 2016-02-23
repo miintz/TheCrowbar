@@ -21,6 +21,10 @@ public class WriteOnManager : MonoBehaviour
     public Text QuestionOne;
     public Text QuestionTwo;
 
+    private GameObject TheCrowGO;
+    private GameObject QuestionOneGO;
+    private GameObject QuestionTwoGO;
+
     public bool QuestionsFirst = false; //eerst vragen of eerst het gedicht?
 
     [TextArea(3, 10)]
@@ -61,7 +65,11 @@ public class WriteOnManager : MonoBehaviour
 
     // Use this for initialization
     void Start()
-    {        
+    {
+        QuestionOneGO = GameObject.Find("Question 1");
+        QuestionTwoGO = GameObject.Find("Question 2");
+        TheCrowGO = GameObject.Find("Crow");
+
         Answers = new List<int>();
         Input = new Dictionary<int, List<string>>();
 
@@ -109,31 +117,32 @@ public class WriteOnManager : MonoBehaviour
 
         IList<int> k = PoemsList.Keys;
         IList<string> v = PoemsList.Values;
-
+        
         int max = k.Max();
         System.Random rand = new System.Random();
 
-        int poemInt = rand.Next(0, max);        
+        int poemInt = rand.Next(1, max);        
 
         CurrentPoems = new List<string>();
         //pak alle texts met deze key
         for (int i = 0; i < v.Count; i++)
         {
             if (k[i] == poemInt)
+            {           
                 CurrentPoems.Add(v[i]);
+            }
         }
 
         try
         {
-            //%EACUTE%
+            //soms is deze lijst leeg
             string t = CurrentPoems[0].Replace("%EACUTE%", "é");
-
             //gebruik de eerste uit de currentpoems lijst        
             TheCrow.text = t;
         }
         catch (Exception e)
         {
-            Debug.Log(CurrentPoems.Count + " " + PoemsList.Count);
+            Debug.Log(CurrentPoems.Count + " " + PoemsList.Count + " " + poemInt);
             TheCrow.text = "something went wrong: " + e.InnerException.ToString();
         }
 
@@ -250,6 +259,7 @@ public class WriteOnManager : MonoBehaviour
                 if (CurrentPoem < CurrentPoems.Count - 1)
                 {
                     CurrentPoem++;
+                    this.GetComponent<UDPSend>().sendString("disablefx");
                     SwipeGUIRight.SetActive(true);
                 }
                 else
@@ -291,6 +301,10 @@ public class WriteOnManager : MonoBehaviour
         QuestionOne.GetComponent<WriteOn>().NoClick = false;
         QuestionTwo.GetComponent<WriteOn>().NoClick = false;
 
+        QuestionOneGO.SetActive(true);
+        QuestionTwoGO.SetActive(true);
+       // TheCrowGO.SetActive(true);
+
         SwipeGUIRight.SetActive(false);
         SwipeGUILeft.SetActive(false);
 
@@ -307,11 +321,18 @@ public class WriteOnManager : MonoBehaviour
         CurrentPoems = new List<string>();
         CurrentPoem = 0;
 
-        TheCrow.GetComponent<WriteOn>().NoClick = true;
+        //TheCrow.GetComponent<WriteOn>().NoClick = true;
         QuestionOne.GetComponent<WriteOn>().NoClick = true;
         QuestionTwo.GetComponent<WriteOn>().NoClick = true;
 
-        this.NoClick = true;
+        QuestionOneGO.SetActive(false);
+        QuestionTwoGO.SetActive(false);
+        //TheCrowGO.SetActive(true);
+
+        this.NoClick = true;        
+
+        SwipeGUILeft.SetActive(true);
+        //SwipeGUIRight.SetActive(true);
 
         setPoemToGameObjects();
     }
