@@ -88,8 +88,8 @@ public class WriteOnManager : MonoBehaviour
         ActiveOptions.Add(new string[2] { optionsone[2], optionstwo[2] });
         
         SwipeGUILeft = GameObject.FindGameObjectWithTag("GUIleft");
-        SwipeGUIRight = GameObject.FindGameObjectWithTag("GUIright");
- 
+        SwipeGUIRight = GameObject.FindGameObjectWithTag("GUIright");        
+
         //vul lijst met poems
         populatePoems();
 
@@ -112,8 +112,8 @@ public class WriteOnManager : MonoBehaviour
         int max = k.Max();
         System.Random rand = new System.Random();
 
-        int poemInt = rand.Next(0, max);
-        
+        int poemInt = rand.Next(0, max);        
+
         CurrentPoems = new List<string>();
         //pak alle texts met deze key
         for (int i = 0; i < v.Count; i++)
@@ -121,16 +121,19 @@ public class WriteOnManager : MonoBehaviour
             if (k[i] == poemInt)
                 CurrentPoems.Add(v[i]);
         }
-        //Debug.Log(CurrentPoems.Count + " peomInt: " + poemInt);
-        //gebruik de eerste uit de currentpoems lijst
-        TheCrow.text = CurrentPoems[0];
+
+        //%EACUTE%
+        string t = CurrentPoems[0].Replace("%EACUTE%", "é");
+
+        //gebruik de eerste uit de currentpoems lijst        
+        TheCrow.text = t;
     }
 
     private void populatePoems()
     {
         PoemsList = new SortedList<int, string>(new DuplicateKeyComparer<int>()); //lijst met niet-unique keys
-
         TextAsset[] poems = Resources.LoadAll<TextAsset>("Poems");
+
         int i = 0;
         foreach (TextAsset path in poems)
         {            
@@ -160,7 +163,6 @@ public class WriteOnManager : MonoBehaviour
         //als de laatste vraag er al is moeten we naar poemmode
         if (QuestionIndex == crowlines.Count)
         {
-            Debug.Log("switching to poemmode");
             switchToPoemMode();
             return; //niet de rest uitvoeren
         }
@@ -192,22 +194,8 @@ public class WriteOnManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        //for (int i = 0; i < Answers.Count; i+)+   
-        //{
-        //    List<string> list = new List<string>();
-        //    Answers.TryGetValue(i, out list);
-
-        //    foreach (string answer in list)
-        //    {
-        //        //Debug.Log(answer + " " + i);
-        //    }
-        //}
-
-        //detect swipe
-
+    {        
         Swipe();
-
     }
 
     //http://forum.unity3d.com/threads/swipe-in-all-directions-touch-and-mouse.165416/
@@ -248,7 +236,6 @@ public class WriteOnManager : MonoBehaviour
             //swipe left
             if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                //Debug.Log("left swipe " + CurrentPoem);
                 //laad vorige 
                 if (CurrentPoem < CurrentPoems.Count - 1)
                 {
@@ -257,39 +244,15 @@ public class WriteOnManager : MonoBehaviour
                 }
                 else
                 {
-                    //Debug.Log("final swipe! switching to question mode");
                     switchToQuestionMode();
                 }
 
-                string naow = TheCrow.text;
-                string yest = CurrentPoems[CurrentPoem];
-
-                naow = Regex.Replace(naow, @"[\s+]", "");
-                yest = Regex.Replace(yest, @"[\s+]", "");
-                
-                char[] na = naow.ToCharArray();
-                char[] ye = yest.ToCharArray();
-
-                List<char> diffe = new List<char>();
-
-                int i =0;
-                foreach (char item in na)
-                {
-                    if (item != ye[i])
-                        diffe.Add(ye[i]);
-
-                    i++;
-                }
-
-                string different = new string(diffe.Distinct().ToArray());
-                Debug.Log(different);
-
-                TheCrow.text = CurrentPoems[CurrentPoem];
+                string t = CurrentPoems[CurrentPoem].Replace("%EACUTE%", "é");
+                TheCrow.text = t;
             }
             //swipe right
             if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                //Debug.Log("right swipe " + CurrentPoem);
                 //laad volgende gedicht
                 if (CurrentPoem > 0)
                 {
@@ -298,7 +261,9 @@ public class WriteOnManager : MonoBehaviour
                         SwipeGUIRight.SetActive(false);
                 }
 
-                TheCrow.text = CurrentPoems[CurrentPoem];
+                //%EACUTE%
+                string t = CurrentPoems[CurrentPoem].Replace("%EACUTE%", "é");
+                TheCrow.text = t;
             }
         }
     }
@@ -344,15 +309,10 @@ public class WriteOnManager : MonoBehaviour
     public void NextAnswer(int index)
     {        
         if (!NoClick && !PoemMode)
-        {
-            Debug.Log("sending string: " + ActiveOptions[CurrentQuestion][index]);
+        {            
             this.GetComponent<UDPSend>().sendString(ActiveOptions[CurrentQuestion][index]);
 
             setAnswersToGameObjects();
-
-            //setting answer
-            //Debug.Log("setting answer + " + CurrentQuestion + " " + ActiveOptions[CurrentQuestion][index]);
-
 
             Answers.Add(index);
             CurrentQuestion++;

@@ -1,6 +1,6 @@
-Where Life Ends by Shel Silverstein	
+Where <b><color=#4b96ae>Life</color></b> Ends by Shel Silverstein	
 
-There is a place where life ends
+There is a place where <b><color=#4b96ae>life</color></b> ends
 And before the street begins,
 And there the grass grows soft and white,
 And there the sun burns crimson bright,
@@ -8,13 +8,13 @@ And there the moon-bird rests from his flight
 To cool in the peppermint wind.
 
 Let us leave this place where the smoke blows black
-\And the dark street winds and bends.
+And the dark street winds and bends.
 Past the pits where the asphalt flowers grow
 We shall walk with a walk that is measured and slow,
 And watch where the chalk-white arrows go
-To the place where life ends.
+To the place where <b><color=#4b96ae>life</color></b> ends.
 
 Yes we'll walk with a walk that is measured and slow,
-And we'll go where the chalk-white arrows go,	
+And we'll go where the chalk-white arrows go,
 For the children, they mark, and the children, they know
-The place where life ends.
+The place where <b><color=#4b96ae>life</color></b> ends.

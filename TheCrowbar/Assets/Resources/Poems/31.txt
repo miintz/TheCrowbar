@@ -1,7 +1,7 @@
-i carry your heart with me by e.e. cummings
+i carry your <b><color=#cf4231>heart</color></b> with me by e.e. cummings
 
-i carry your heart with me (i carry it in
-my heart) i am never without it (anywhere
+i carry your <b><color=#cf4231>heart</color></b> with me (i carry it in
+my <b><color=#cf4231>heart</color></b>) i am never without it (anywhere
 i go you go, my dear; and whatever is done
 by only me is your doing, my darling)
                                   i fear
@@ -16,4 +16,4 @@ and the sky of the sky of a tree called life; which grows
 higher than the soul can hope or mind can hide)
 and this is the wonder that's keeping the stars apart
 
-i carry your heart (i carry it in my heart)
+i carry your <b><color=#cf4231>heart</color></b> (i carry it in my <b><color=#cf4231>heart</color></b>)

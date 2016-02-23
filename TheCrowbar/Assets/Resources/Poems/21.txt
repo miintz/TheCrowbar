@@ -1,6 +1,6 @@
-Where the Sidewalk Ends by Shel Silverstein
+Where the <b><color=#cf4231>Sidewalk</color></b> Ends by Shel Silverstein
 
-There is a place where the sidewalk ends
+There is a place where the <b><color=#cf4231>sidewalk</color></b> ends
 And before the street begins,
 And there the grass grows soft and white,
 And there the sun burns crimson bright,
@@ -12,9 +12,9 @@ And the dark street winds and bends.
 Past the pits where the asphalt flowers grow
 We shall walk with a walk that is measured and slow,
 And watch where the chalk-white arrows go
-To the place where the sidewalk ends.
+To the place where the <b><color=#cf4231>sidewalk</color></b> ends.
 
 Yes we'll walk with a walk that is measured and slow,
 And we'll go where the chalk-white arrows go,
 For the children, they mark, and the children, they know
-The place where the sidewalk ends.
+The place where the <b><color=#cf4231>sidewalk</color></b> ends.
