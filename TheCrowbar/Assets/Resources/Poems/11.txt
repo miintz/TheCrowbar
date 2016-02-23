@@ -1,7 +1,7 @@
 A Poison Tree by William Blake
 
 I was angry with my friend;
-I told my <b><color=#ff0000ff>wrath</color></b>, my <b><color=#cf4231>wrath</color></b> did end.
+I told my <b><color=#cf4231>wrath</color></b>, my <b><color=#cf4231>wrath</color></b> did end.
 I was angry with my foe:
 I told it not, my <b><color=#cf4231>wrath</color></b> did grow.
 
