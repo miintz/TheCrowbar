@@ -11,14 +11,13 @@ public class SpriteController : MonoBehaviour {
     public bool SingleEffect = true;
     private List<int> ActiveEffects = new List<int>();
 
-
     private Dictionary<string, List<GameObject>> Sprites;
     private Dictionary<string, List<string>> SpritesVarietyOriginal;
     private Dictionary<string, Dictionary<string, Transform>> SpritesVarietyTransforms;
 
     private int CurrentVarietyStepper = 0;
 
-    private bool KeyMode = false;
+    public bool KeyMode = false;
 
     private Sprite[] BeerSprites;
     private Sprite[] WineSprites;
@@ -39,7 +38,7 @@ public class SpriteController : MonoBehaviour {
         ChampagneSprites = Resources.LoadAll<Sprite>("Sprites/Bottles/Champagne");
         
         Fires = GameObject.FindGameObjectsWithTag("flames"); //1tje gaat niet?
-        
+       
 	    //we hebben een lijst met objecten...
         PopulateSpriteList();
 
@@ -105,8 +104,8 @@ public class SpriteController : MonoBehaviour {
 
     void SetInflammable(bool IN_FLAMES = false, bool active = true)
     {        
-        for (int i = 0; i < Fires.Length - 1; i++)
-        {           
+        for (int i = 0; i < Fires.Length; i++) //stupid!! de -1 zorgde voor de bug...
+        {            
             Fires[i].SetActive(IN_FLAMES);
         }
 
