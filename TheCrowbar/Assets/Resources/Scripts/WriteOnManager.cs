@@ -91,7 +91,8 @@ public class WriteOnManager : MonoBehaviour
         SwipeGUIRight = GameObject.FindGameObjectWithTag("GUIright");        
 
         //vul lijst met poems
-        populatePoems();
+        populatePoems();        
+        System.Threading.Thread.Sleep(100); //sometimes reading takes too long
 
         if (QuestionsFirst)
             switchToQuestionMode();
@@ -122,11 +123,20 @@ public class WriteOnManager : MonoBehaviour
                 CurrentPoems.Add(v[i]);
         }
 
-        //%EACUTE%
-        string t = CurrentPoems[0].Replace("%EACUTE%", "é");
+        try
+        {
+            //%EACUTE%
+            string t = CurrentPoems[0].Replace("%EACUTE%", "é");
 
-        //gebruik de eerste uit de currentpoems lijst        
-        TheCrow.text = t;
+            //gebruik de eerste uit de currentpoems lijst        
+            TheCrow.text = t;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(CurrentPoems.Count + " " + PoemsList.Count);
+            TheCrow.text = "something went wrong: " + e.InnerException.ToString();
+        }
+
     }
 
     private void populatePoems()

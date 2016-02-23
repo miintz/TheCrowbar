@@ -8,6 +8,9 @@ public class SpriteController : MonoBehaviour {
 
     public bool ShufflePositionOnStart = true;
     public bool HideFlamesOnStart = true;
+    public bool SingleEffect = true;
+    private List<int> ActiveEffects = new List<int>();
+
 
     private Dictionary<string, List<GameObject>> Sprites;
     private Dictionary<string, List<string>> SpritesVarietyOriginal;
@@ -98,18 +101,20 @@ public class SpriteController : MonoBehaviour {
                 SetInflammable(false);
             }
         }
-	}
+	}   
 
-    void SetInflammable(bool IN_FLAMES = false)
-    {
-        Debug.Log("setting flames to: " + IN_FLAMES + " " + Fires.Length);
+    void SetInflammable(bool IN_FLAMES = false, bool active = true)
+    {        
         for (int i = 0; i < Fires.Length - 1; i++)
         {           
             Fires[i].SetActive(IN_FLAMES);
         }
+
+        if(active)
+            ActiveEffects.Add(0);
     }
 
-    void SetOversee(bool visible = false)
+    void SetOversee(bool visible = false, bool active = true)
     { 
         //hide een aantal flessen?
         string[] Keys = new string[Sprites.Count];
@@ -122,9 +127,12 @@ public class SpriteController : MonoBehaviour {
                 Sprites[Key][i].SetActive(visible);
             }
         }
+
+        if(active)
+            ActiveEffects.Add(2);
     }
 
-    void SetVariety(int stepper)
+    void SetVariety(int stepper, bool active = true)
     {
         CurrentVarietyStepper = stepper;        
         
@@ -169,6 +177,9 @@ public class SpriteController : MonoBehaviour {
                 }
             }            
         }
+
+        if(active)
+            ActiveEffects.Add(1);
     }
 
     void ShufflePosition()
@@ -318,37 +329,98 @@ public class SpriteController : MonoBehaviour {
             {
                 if (ReceivedMessage == i)
                 {
-                    Debug.Log("hebbasases " + i + " " + ReceivedMessage);
-                    if (i.Contains("fl"))
-                        Debug.Log("waarom vuurt dit niet?");
+                    //Debug.Log("hebbasases " + i + " " + ReceivedMessage);
+                    //if (i.Contains("fl"))
+                    //    Debug.Log("waarom vuurt dit niet?");
 
-                    if (i.Length != ReceivedMessage.Length)
-                        Debug.Log("huh");
+                    //if (i.Length != ReceivedMessage.Length)
+                    //    Debug.Log("huh");
 
-                    if (i.Contains("fl")) //ik heb werkelijk waar geen flets idee waarom de case niet werkt. 
-                    {                  
-                        SetInflammable(true);                            
-                    }   
+                    //if (i.Contains("fl")) //ik heb werkelijk waar geen flets idee waarom de case niet werkt. 
+                    //{                  
+                    //    SetInflammable(true);                            
+                    //}   
 
                     switch (i)
-                    {                        
+                    {                     
+                        case "flame":
+                            if (SingleEffect)
+                                DisableEffects();
+
+                            SetInflammable(true);
+                            
+                            break;
+                        case "noflame":
+                            if (SingleEffect)
+                                DisableEffects();
+
+                            SetInflammable(true);
+                            
+                            break;
                         case "variety":
                             //SetVariety(1);
+                            if (SingleEffect)
+                                DisableEffects();
+
                             SetVariety(13);
+                            
                             break;
                         case "novariety":
+                            if (SingleEffect)
+                                DisableEffects();
+
                             SetVariety(13);
+                            
                             break;
                         case "oversee":
+                            if (SingleEffect)
+                                DisableEffects();
+
                             SetOversee(false);
+                            
                             break;
                         case "nooversee":
                             //SetOversee(false);
+                            if (SingleEffect)
+                                DisableEffects();
+
                             SetOversee(false);
-                            break;
+                            
+                            break;                        
                     }
                 }
             }
+        }
+    }
+
+    private void DisableEffects()
+    {
+        List<int> remover = new List<int>();
+        foreach (int a in ActiveEffects)
+        {         
+            switch (a)
+            {
+                case 0:
+                    Debug.Log("disabling flames");
+                    SetInflammable(false, false);
+                    remover.Add(a);
+                    break;
+                case 1:
+                    Debug.Log("disabling variety");
+                    SetVariety(1, false);
+                    remover.Add(a);
+                    break;
+                case 2:
+                    Debug.Log("disabling oversee");
+                    SetOversee(true, false);
+                    remover.Add(a);
+                    break;
+            }
+        }
+
+        foreach (int oo in remover)
+        {
+            ActiveEffects.Remove(oo);
         }
     }
 }
