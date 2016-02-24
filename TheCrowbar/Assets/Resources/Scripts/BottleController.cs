@@ -405,12 +405,12 @@ public class BottleController : MonoBehaviour {
 
                     //if (i.Length != ReceivedMessage.Length)
                     //    Debug.Log("huh");
-
-                   
+					
+		//Debug.Log ("message received: " + ReceivedMessage);
 
                     switch (ReceivedMessage)
                     {   
-
+			/*
                         case "flame":
                             if (SingleEffect)
                                 DisableEffects();
@@ -456,15 +456,22 @@ public class BottleController : MonoBehaviour {
                             SetOversee(false);
                             
                             break;             
-
+*/
                         case "disablefx":
                             DisableEffects();
                             break;
-						case "startfx":
+						case "startfx":						
 							SetOversee(false);
 							SetReplace(true);
 							SetInflammable(true);
 							break;
+		case "playsingle":
+			GameObject.Find("CrowSound").GetComponent<Assets.Resources.Scripts.SoundManager>().PlaySingleRandom();
+			break;
+		case "playcrowd":
+			GameObject.Find("CrowSound").GetComponent<Assets.Resources.Scripts.SoundManager>().PlayCrowdRandom();
+			break;
+
                     }
                 //}
         //    }
@@ -473,31 +480,10 @@ public class BottleController : MonoBehaviour {
 
     private void DisableEffects()
     {
-        List<int> remover = new List<int>();
-        foreach (int a in ActiveEffects)
-        {         
-            switch (a)
-            {
-                case 0:
-                    SetInflammable(false, false);
-                    remover.Add(a);
-                    break;
-                case 1:
-                    //SetVariety(false, false);
-					SetReplace(false,false);
-                    remover.Add(a);
-                    break;
-                case 2:
-                    SetOversee(true, false);
-                    remover.Add(a);
-                    break;
-            }
-        }
-
-        foreach (int oo in remover)
-        {
-            ActiveEffects.Remove(oo);
-        }
+    	SetInflammable(false, false);
+        SetReplace(false,false);
+        SetOversee(true, false);        
+    
     }
 
     public bool ShelfAlbedeoDec { get; set; }

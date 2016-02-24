@@ -51,8 +51,10 @@ public class WriteOn : MonoBehaviour
     
     void startSpeaking()
     {
-        if (Speaker && Single)
-            GameObject.Find("CrowSound").GetComponent<SoundManager>().PlaySingleRandom();
+        if (Speaker && Single) {
+			//GameObject.Find ("CrowSound").GetComponent<SoundManager> ().PlaySingleRandom ();
+			GameObject.Find("EventSystem").GetComponent<UDPSend>().sendString("playsingle");
+		}
     }
 
     public void Update()

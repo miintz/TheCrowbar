@@ -288,7 +288,7 @@ public class WriteOnManager : MonoBehaviour
                 if (CurrentPoem < CurrentPoems.Count - 1)
                 {
                     CurrentPoem++;
-                    this.GetComponent<UDPSend>().sendString("disablefx");
+					//Debug.Log("Hier komt ie dan");
                     SwipeGUIRight.SetActive(true);
                 }
                 else
@@ -391,13 +391,16 @@ public class WriteOnManager : MonoBehaviour
 		}
 		else if (CrowOutroOutro) {
 			AnswerDisabled = true;
+			//Debug.Log("sending disablefx");
+			this.GetComponent<UDPSend>().sendString("disablefx");
 			ShowCrowIntroIntro();
 			CrowOutroOutro = false;
 		}
 		else if (!NoClick && !PoemMode && !AnswerDisabled)
 		{   
-			GameObject.Find("CrowSound").GetComponent<SoundManager>().PlayCrowdRandom();
+			//GameObject.Find("CrowSound").GetComponent<SoundManager>().PlayCrowdRandom();
             this.GetComponent<UDPSend>().sendString(ActiveOptions[CurrentQuestion][index]);
+			this.GetComponent<UDPSend>().sendString("playcrowd");
 			AnswerDisabled = true;
             setAnswersToGameObjects();
 
@@ -458,6 +461,7 @@ public class WriteOnManager : MonoBehaviour
 
 	private void ShowCrowIntroIntro()
 	{
+		firstPressPos = new Vector2 ();
 		logoGO.SetActive (true);
 		SwipeGUILeft.SetActive (false);
 		TheCrow.text = "";
