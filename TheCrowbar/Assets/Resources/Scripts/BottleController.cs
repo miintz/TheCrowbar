@@ -187,7 +187,13 @@ public class BottleController : MonoBehaviour {
         //hide een aantal flessen?
         if (!visible)
         {
-            GameObject.FindGameObjectsWithTag("bottle").ToList().ForEach(t => t.GetComponent<MeshRenderer>().enabled = false);
+			List<GameObject> GOs = GameObject.FindGameObjectsWithTag("bottle").ToList();
+			foreach(GameObject a in GOs)
+			{
+				if(UnityEngine.Random.Range(0,2) == 1)
+            		a.GetComponent<MeshRenderer>().enabled = false;
+			}
+
             MainLightIntensity = 1;
             DirLightIntensity = 0.6f;
             ShelfAlbedeo = 0.5f;
@@ -403,7 +409,8 @@ public class BottleController : MonoBehaviour {
                    
 
                     switch (ReceivedMessage)
-                    {                     
+                    {   
+
                         case "flame":
                             if (SingleEffect)
                                 DisableEffects();
@@ -449,9 +456,15 @@ public class BottleController : MonoBehaviour {
                             SetOversee(false);
                             
                             break;             
+
                         case "disablefx":
                             DisableEffects();
                             break;
+						case "startfx":
+							SetOversee(false);
+							SetReplace(true);
+							SetInflammable(true);
+							break;
                     }
                 //}
         //    }

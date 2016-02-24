@@ -27,8 +27,12 @@ public class WriteOnManager : MonoBehaviour
 
     public bool QuestionsFirst = false; //eerst vragen of eerst het gedicht?
 
+	
 	[TextArea(3, 10)]
 	public string TheCrowIntro;
+
+	[TextArea(3, 10)]
+	public string TheCrowIntroIntro;
 
 	[TextArea(3, 10)]
 	public string TheCrowMiddle;
@@ -73,6 +77,7 @@ public class WriteOnManager : MonoBehaviour
     public bool PoemMode;
 
 	private bool CrowIntro;
+	private bool CrowIntroIntro;
 	private bool CrowMiddle;
 	private bool CrowOutro;
 	private bool CrowOutroOutro;
@@ -82,9 +87,12 @@ public class WriteOnManager : MonoBehaviour
 
     private List<string[]> ActiveOptions = new List<string[]>();
 
+	private GameObject logoGO;
+
     // Use this for initialization
     void Start()
     {
+		logoGO = GameObject.Find("Logo");
         QuestionOneGO = GameObject.Find("Question 1");
         QuestionTwoGO = GameObject.Find("Question 2");
         TheCrowGO = GameObject.Find("Crow");
@@ -122,7 +130,7 @@ public class WriteOnManager : MonoBehaviour
         System.Threading.Thread.Sleep(100); //sometimes reading takes too long
 
         if (QuestionsFirst) {
-			ShowCrowIntro ();
+			ShowCrowIntroIntro ();
 		}
         else
             switchToPoemMode();
@@ -234,7 +242,8 @@ public class WriteOnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {        
-        Swipe();
+		if (PoemMode)
+        	Swipe();
     }
 
     //http://forum.unity3d.com/threads/swipe-in-all-directions-touch-and-mouse.165416/
@@ -285,7 +294,6 @@ public class WriteOnManager : MonoBehaviour
                 else
                 {
                     //switchToQuestionMode();
-					Debug.Log("show crow outro");
 					ShowCrowOutro();
 					return; //moeten niet verder 
                 }
@@ -362,7 +370,13 @@ public class WriteOnManager : MonoBehaviour
 
     public void NextAnswer(int index)
     {    
-		if (CrowIntro) {
+		if (CrowIntroIntro) {
+			AnswerDisabled = true;
+			ShowCrowIntro();
+			//CrowIntro = false;
+			CrowIntroIntro = false;
+		}
+		else if (CrowIntro) {
 			AnswerDisabled = true;
 			switchToQuestionMode ();
 			CrowIntro = false;
@@ -377,7 +391,7 @@ public class WriteOnManager : MonoBehaviour
 		}
 		else if (CrowOutroOutro) {
 			AnswerDisabled = true;
-			ShowCrowIntro();
+			ShowCrowIntroIntro();
 			CrowOutroOutro = false;
 		}
 		else if (!NoClick && !PoemMode && !AnswerDisabled)
@@ -396,6 +410,8 @@ public class WriteOnManager : MonoBehaviour
 
 	void ShowCrowOutro()
 	{
+		this.GetComponent<UDPSend>().sendString("startfx");
+
 		string CrowT = TheCrowOutro;
 		List<string[]> replacements = new List<string[]> ();
 
@@ -414,10 +430,11 @@ public class WriteOnManager : MonoBehaviour
 		QuestionOneGO.SetActive (true);
 
 		Vector3 pos = GameObject.Find("Text 1").transform.position;
-		pos.y -= 8;
+		pos.y -= 24;
 		GameObject.Find("Text 1").transform.position = pos;
 		QuestionOne.text = "Continue...";
 		CrowOutro = true;
+		PoemMode = false;
 	}
 
 	void ShowCrowOutroOutro()
@@ -425,7 +442,7 @@ public class WriteOnManager : MonoBehaviour
 		TheCrow.text = TheCrowOutroOutro;
 		QuestionTwo.text = "";
 		Vector3 pos = GameObject.Find("Text 1").transform.position;
-		pos.y += 8;
+		pos.y += 24;
 		GameObject.Find("Text 1").transform.position = pos;
 		QuestionOne.text = "OK";
 		CrowOutroOutro = true;
@@ -439,13 +456,26 @@ public class WriteOnManager : MonoBehaviour
 		CrowMiddle = true;
 	}
 
+	private void ShowCrowIntroIntro()
+	{
+		logoGO.SetActive (true);
+		SwipeGUILeft.SetActive (false);
+		TheCrow.text = "";
+		QuestionOne.text = "";
+		QuestionTwo.text = "";
+		CrowIntroIntro = true;
+	}
+
 	private void ShowCrowIntro()
 	{
-		Debug.Log ("crow intro");
+		logoGO.SetActive (false);
+
 		SwipeGUILeft.SetActive (false);
 		TheCrow.text = TheCrowIntro;
 		QuestionTwo.text = "";
+		//QuestionTwoGO.SetActive (false);
 		QuestionOne.text = "OK!";
+
 		CrowIntro = true;
 	}
 
