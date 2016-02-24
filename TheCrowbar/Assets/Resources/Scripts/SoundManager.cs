@@ -113,7 +113,6 @@ namespace Assets.Resources.Scripts
 
 		public void PlayCrowdRandom()
 		{
-			if(!GameObject.Find("EventSystem").GetComponent<WriteOnManager>().AnswerDisabled)
 				src.PlayOneShot(crowds[UnityEngine.Random.Range(0, singles.Count)]);
 		}
 	}
