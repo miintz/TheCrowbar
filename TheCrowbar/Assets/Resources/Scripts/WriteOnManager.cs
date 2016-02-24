@@ -27,7 +27,19 @@ public class WriteOnManager : MonoBehaviour
 
     public bool QuestionsFirst = false; //eerst vragen of eerst het gedicht?
 
-    [TextArea(3, 10)]
+	[TextArea(3, 10)]
+	public string TheCrowIntro;
+
+	[TextArea(3, 10)]
+	public string TheCrowMiddle;
+	
+	[TextArea(3, 10)]
+	public string TheCrowOutro;
+
+	[TextArea(3, 10)]
+	public string TheCrowOutroOutro;
+	
+	[TextArea(3, 10)]
     public string TheCrowText;
 
     [TextArea(3, 10)]
@@ -46,6 +58,8 @@ public class WriteOnManager : MonoBehaviour
 
     public bool NoClick = true;
 
+	public bool AnswerDisabled = true;
+
     private Dictionary<int, List<string>> Input;
     private int CrowIndex;
     private int QuestionIndex;
@@ -57,6 +71,11 @@ public class WriteOnManager : MonoBehaviour
     private int CurrentPoem = 0;
 
     public bool PoemMode;
+
+	private bool CrowIntro;
+	private bool CrowMiddle;
+	private bool CrowOutro;
+	private bool CrowOutroOutro;
 
     public GameObject SwipeGUILeft;
     public GameObject SwipeGUIRight;
@@ -102,8 +121,9 @@ public class WriteOnManager : MonoBehaviour
         populatePoems();        
         System.Threading.Thread.Sleep(100); //sometimes reading takes too long
 
-        if (QuestionsFirst)
-            switchToQuestionMode();
+        if (QuestionsFirst) {
+			ShowCrowIntro ();
+		}
         else
             switchToPoemMode();
       
@@ -179,20 +199,20 @@ public class WriteOnManager : MonoBehaviour
         List<string> crowlines = new List<string>();
         Input.TryGetValue(2, out crowlines);
 
-        //als de laatste vraag er al is moeten we naar poemmode
-        if (QuestionIndex == crowlines.Count)
+        //als de laatste vraag er al is moeten we naar poemmode	
+		if (CurrentQuestion == crowlines.Count - 1)
         {
-            switchToPoemMode();
+           	ShowCrowMiddle();
             return; //niet de rest uitvoeren
         }
 
         if (!crowOnly)
         {
-            QuestionOne.text = firstlines[QuestionIndex];
-            QuestionOne.GetComponent<WriteOn>().Init();
+			QuestionOne.text = firstlines[CurrentQuestion];
+			QuestionOne.GetComponent<WriteOn>().Init();
 
-            QuestionTwo.text = secondlines[QuestionIndex];
-            QuestionTwo.GetComponent<WriteOn>().Init();
+			QuestionTwo.text = secondlines[CurrentQuestion];
+			QuestionTwo.GetComponent<WriteOn>().Init();
 
             QuestionIndex++;
 
@@ -264,7 +284,10 @@ public class WriteOnManager : MonoBehaviour
                 }
                 else
                 {
-                    switchToQuestionMode();
+                    //switchToQuestionMode();
+					Debug.Log("show crow outro");
+					ShowCrowOutro();
+					return; //moeten niet verder 
                 }
 
                 string t = CurrentPoems[CurrentPoem].Replace("%EACUTE%", "é");
@@ -338,18 +361,105 @@ public class WriteOnManager : MonoBehaviour
     }
 
     public void NextAnswer(int index)
-    {        
-        if (!NoClick && !PoemMode)
-        {            
+    {    
+		if (CrowIntro) {
+			AnswerDisabled = true;
+			switchToQuestionMode ();
+			CrowIntro = false;
+		} else if (CrowMiddle) {
+			AnswerDisabled = true;
+			switchToPoemMode ();
+			CrowMiddle = false;
+		} else if (CrowOutro) {
+			AnswerDisabled = true;
+			ShowCrowOutroOutro();
+			CrowOutro = false;
+		}
+		else if (CrowOutroOutro) {
+			AnswerDisabled = true;
+			ShowCrowIntro();
+			CrowOutroOutro = false;
+		}
+		else if (!NoClick && !PoemMode && !AnswerDisabled)
+		{   
+			GameObject.Find("CrowSound").GetComponent<SoundManager>().PlayCrowdRandom();
             this.GetComponent<UDPSend>().sendString(ActiveOptions[CurrentQuestion][index]);
-
+			AnswerDisabled = true;
             setAnswersToGameObjects();
 
             Answers.Add(index);
+
             CurrentQuestion++;
         }
 
     }
+
+	void ShowCrowOutro()
+	{
+		string CrowT = TheCrowOutro;
+		List<string[]> replacements = new List<string[]> ();
+
+		replacements.Add (new string[]{"isn't", "is"});
+		replacements.Add (new string[]{"wasn't", "was"});
+		replacements.Add (new string[]{"didn't need", "needed"});
+
+		for (int a = 0; a < replacements.Count; a++) {
+			CrowT = CrowT.Replace(replacements[a][System.Math.Abs(Answers[a]-1)], replacements[a][Answers[a]]); 
+		}
+
+		TheCrow.text = CrowT;
+		SwipeGUILeft.SetActive (false);
+		SwipeGUIRight.SetActive (false);
+		QuestionTwo.text = "";
+		QuestionOneGO.SetActive (true);
+
+		Vector3 pos = GameObject.Find("Text 1").transform.position;
+		pos.y -= 8;
+		GameObject.Find("Text 1").transform.position = pos;
+		QuestionOne.text = "Continue...";
+		CrowOutro = true;
+	}
+
+	void ShowCrowOutroOutro()
+	{
+		TheCrow.text = TheCrowOutroOutro;
+		QuestionTwo.text = "";
+		Vector3 pos = GameObject.Find("Text 1").transform.position;
+		pos.y += 8;
+		GameObject.Find("Text 1").transform.position = pos;
+		QuestionOne.text = "OK";
+		CrowOutroOutro = true;
+	}
+
+	void ShowCrowMiddle()
+	{
+		TheCrow.text = TheCrowMiddle;
+		QuestionTwo.text = "";
+		QuestionOne.text = "OK";
+		CrowMiddle = true;
+	}
+
+	private void ShowCrowIntro()
+	{
+		Debug.Log ("crow intro");
+		SwipeGUILeft.SetActive (false);
+		TheCrow.text = TheCrowIntro;
+		QuestionTwo.text = "";
+		QuestionOne.text = "OK!";
+		CrowIntro = true;
+	}
+
+	void DisableQuestions()
+	{
+		QuestionOneGO.SetActive (false);
+		QuestionTwoGO.SetActive (false);
+	}
+
+	void EnableQuestions()
+	{
+		QuestionOneGO.SetActive (false);
+		QuestionTwoGO.SetActive (false);
+	}
 }
 public class DuplicateKeyComparer<TKey>
                 :

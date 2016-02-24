@@ -119,7 +119,8 @@ public class BottleController : MonoBehaviour {
                 if(SingleEffect)
                     DisableEffects();
 
-                SetVariety(true); //blijft altijd 1 unique fles
+				SetReplace(true);
+                //SetVariety(true); //blijft altijd 1 unique fles
             }
 
             if (Input.GetKeyDown(KeyCode.S))
@@ -127,7 +128,8 @@ public class BottleController : MonoBehaviour {
                 if (SingleEffect)
                     DisableEffects();
 
-                SetVariety(false);
+				SetReplace(false);
+				//SetVariety(false);
             }
 
             if (Input.GetKeyDown(KeyCode.L))
@@ -205,6 +207,17 @@ public class BottleController : MonoBehaviour {
         if(active)
             ActiveEffects.Add(2);
     }
+
+	void SetReplace(bool wine = false, bool active = true)
+	{
+		if(wine)
+			GameObject.FindGameObjectsWithTag ("bottle").ToList ().ForEach (t => t.transform.localScale = new Vector3(1.0f, 0.6f, 1.0f));
+		else
+			GameObject.FindGameObjectsWithTag ("bottle").ToList ().ForEach (t => t.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f));
+
+		if (active)
+			ActiveEffects.Add(0);
+	}
 
     void SetVariety(bool single = false, bool active = true)
     {
@@ -381,8 +394,6 @@ public class BottleController : MonoBehaviour {
         //        if (ReceivedMessage == i)
         //        {
 
-                   
-
                     //if (i.Contains("fl"))
                         //Debug.Log("waarom vuurt dit niet?");
 
@@ -412,17 +423,18 @@ public class BottleController : MonoBehaviour {
                             if (SingleEffect)
                                 DisableEffects();
 
-                            SetVariety(true);
+                            //SetVariety(true);
+							SetReplace(true);
                             
                             break;
                         case "novariety":
                             if (SingleEffect)
                                 DisableEffects();
 
-                            SetVariety(true);
-                            
-                            break;
-                        case "oversee":
+                            //SetVariety(true);
+							SetReplace(true);
+							break;
+						case "oversee":
                             if (SingleEffect)
                                 DisableEffects();
 
@@ -458,7 +470,8 @@ public class BottleController : MonoBehaviour {
                     remover.Add(a);
                     break;
                 case 1:
-                    SetVariety(false, false);
+                    //SetVariety(false, false);
+					SetReplace(false,false);
                     remover.Add(a);
                     break;
                 case 2:

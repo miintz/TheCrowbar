@@ -17,7 +17,7 @@ public class WriteOn : MonoBehaviour
     public int SkipWord = 2;
     public bool Single = false;
     public int Delay;
-
+	public bool LastInLine = false;
     private String[] Words;
     private float WordTimer;
     private int CurrentIndex;
@@ -77,6 +77,7 @@ public class WriteOn : MonoBehaviour
                 }
 
                 Target.text = "";
+
                 for (int i = 0; i < CurrentIndex + 1; i++)
                 {
                     if (i != 0)
@@ -88,6 +89,8 @@ public class WriteOn : MonoBehaviour
                 CurrentIndex++;
                 WordTimer = 0.0f;
             }
+			if(CurrentIndex >= Words.Length && LastInLine)
+				GameObject.Find("EventSystem").GetComponent<WriteOnManager>().AnswerDisabled = false;
 
             if (Interactable)
             {

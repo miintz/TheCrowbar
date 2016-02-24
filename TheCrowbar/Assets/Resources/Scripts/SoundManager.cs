@@ -1,108 +1,120 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System;
 
 namespace Assets.Resources.Scripts
 {
-    public class SoundManager : MonoBehaviour
-    {
-        string absolutePath = "./"; // relative path to where the app is running
+	public class SoundManager : MonoBehaviour
+	{
+		//string absolutePath = "./"; // relative path to where the app is running
 
-        AudioSource src;
-        List<AudioClip> singles = new List<AudioClip>();
-        List<AudioClip> crowds = new List<AudioClip>();
+	 	AudioSource src;
+		List<AudioClip> singles = new List<AudioClip>();
+		List<AudioClip> crowds = new List<AudioClip>();
 
-        int soundIndex = 0;
+		int soundIndex = 0;
 
-        //compatible file extensions
-        string[] fileTypes = { "ogg", "wav" };
+		//compatible file extensions
+		//string[] fileTypes = { "ogg", "wav" };
 
-        FileInfo[] files;
+		//FileInfo[] files;
 
-        void Start()
-        {
-            //being able to test in unity
-            if (Application.isEditor) absolutePath = "Assets/Resources/Clips";
-            if (src == null) src = gameObject.AddComponent<AudioSource>();
-            reloadSounds();
-        }
+		void Start()
+		{
+			//being able to test in unity
+			//if (Application.isEditor) absolutePath = "Assets/Resources/Clips";
+			if (src == null) src = gameObject.AddComponent<AudioSource>();
+			reloadSounds();
+		}
 
-        void reloadSounds()
-        {
-            absolutePath = "Assets/Resources/Clips/Single";
+		AudioClip[] clips;
 
-            DirectoryInfo info = new DirectoryInfo(absolutePath);
-            files = info.GetFiles();
+		void reloadSounds()
+		{
+			singles = UnityEngine.Resources.LoadAll<AudioClip>("Clips/Single").ToList();
+			crowds = UnityEngine.Resources.LoadAll<AudioClip>("Clips/Crowd").ToList();
+				
+			/*
+			absolutePath = "Assets/Resources/Clips/Single";
 
-            //check if the file is valid and load it
-            foreach (FileInfo f in files)
-            {
-                if (validFileType(f.FullName))
-                {
-                    StartCoroutine(loadFile(f.FullName, true));
-                }
-            }
+			DirectoryInfo info = new DirectoryInfo(absolutePath);
+			files = info.GetFiles();
 
-            absolutePath = "Assets/Resources/Clips/Crowd";
+			//check if the file is valid and load it
+			foreach (FileInfo f in files)
+			{
+				if (validFileType(f.FullName))
+				{
+					StartCoroutine(loadFile(f.FullName, true));
+				}
+			}
 
-            info = new DirectoryInfo(absolutePath);
-            files = info.GetFiles();
+			absolutePath = "Assets/Resources/Clips/Crowd";
 
-            //check if the file is valid and load it
-            foreach (FileInfo f in files)
-            {
+			info = new DirectoryInfo(absolutePath);
+			files = info.GetFiles();
 
-                if (validFileType(f.FullName))
-                {
-                    StartCoroutine(loadFile(f.FullName, false));
-                }
-            }
-        }
+			//check if the file is valid and load it
+			foreach (FileInfo f in files)
+			{
 
-        bool validFileType(string filename)
-        {
-            foreach (string ext in fileTypes)
-            {
-                if (!filename.Contains(".meta"))
-                {
-                    if (filename.IndexOf(ext) > -1) return true;
-                }
-            }
-            return false;
-        }
+				if (validFileType(f.FullName))
+				{
+					StartCoroutine(loadFile(f.FullName, false));
+				}
+			}
+			*/
+		}
 
-        IEnumerator loadFile(string path, bool crowd = false)
-        {
-            WWW www = new WWW("file://" + path);
+		/*
+		bool validFileType(string filename)
+		{
+			foreach (string ext in fileTypes)
+			{
+				if (!filename.Contains(".meta"))
+				{
+					if (filename.IndexOf(ext) > -1) return true;
+				}
+			}
+			return false;
+		}
+		*/
 
-            AudioClip myAudioClip = www.audioClip;
-            while (!myAudioClip.isReadyToPlay)
-                yield return www;
+		/*
+		IEnumerator loadFile(string path, bool crowd = false)
+		{
+			WWW www = new WWW("file://" + path);
 
-            AudioClip clip = www.GetAudioClip(false);
-            string[] parts = path.Split('\\');
-            clip.name = parts[parts.Length - 1];
+			AudioClip myAudioClip = www.audioClip;
+			while (!myAudioClip.isReadyToPlay)
+				yield return www;
 
-            if (!crowd)
-            {                
-                crowds.Add(clip);
-            }
-            else
-                singles.Add(clip);
-        }
+			AudioClip clip = www.GetAudioClip(false);
+			string[] parts = path.Split('\\');
+			clip.name = parts[parts.Length - 1];
 
-        public void PlaySingleRandom()
-        {
-            System.Random r = new System.Random();
-            src.PlayOneShot(singles[r.Next(singles.Count)]);
-        }
+			if (!crowd)
+			{                
+				crowds.Add(clip);
+			}
+			else
+				singles.Add(clip);
+		}
+		*/
 
-        public void PlayCrowdRandom()
-        {
-            System.Random r = new System.Random();
-            src.PlayOneShot(crowds[r.Next(singles.Count)]);
-        }
-    }
+		public void PlaySingleRandom()
+		{	
+			//if(!GameObject.Find("EventSystem").GetComponent<WriteOnManager>().AnswerDisabled)
+				src.PlayOneShot(singles[UnityEngine.Random.Range(0, singles.Count)]);
+		}
+
+		public void PlayCrowdRandom()
+		{
+			if(!GameObject.Find("EventSystem").GetComponent<WriteOnManager>().AnswerDisabled)
+				src.PlayOneShot(crowds[UnityEngine.Random.Range(0, singles.Count)]);
+		}
+	}
 }
